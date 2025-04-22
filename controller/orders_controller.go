@@ -131,7 +131,7 @@ func (h *OrdersController) OrdersUpdate(c echo.Context) error {
 		})
 	}
 
-	//  get to service
+	//  check get to service
 	_, errCheck := h.ordersService.GetIdOrders(uint(id))
 	if errCheck != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{
@@ -184,6 +184,41 @@ func (h *OrdersController) OrdersUpdate(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"code":    http.StatusOK,
 		"message": "Update successfully",
+		"data":    nil,
+	})
+}
+
+func (h *OrdersController) OrdersDelete(c echo.Context) error {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"code":    http.StatusBadRequest,
+			"message": "Invalid id",
+		})
+	}
+
+	//  check get to service
+	_, errCheck := h.ordersService.GetIdOrders(uint(id))
+	if errCheck != nil {
+		return c.JSON(http.StatusNotFound, map[string]interface{}{
+			"code":    http.StatusNotFound,
+			"message": "Data not found",
+		})
+	}
+
+	// delete to service
+	if err := h.ordersService.DeleteOrders(uint(id)); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"code":    http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+	}
+
+	// return success
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"code":    http.StatusOK,
+		"message": "Delete successfully",
 		"data":    nil,
 	})
 }
