@@ -25,3 +25,15 @@ func (s *OrdersService) GetIdOrders(id uint) (model.Orders, error) {
 	err := s.DB.First(&order, id).Error
 	return order, err
 }
+
+func (s *OrdersService) CreateOrders(data *model.Orders) error {
+	return s.DB.Create(data).Error
+}
+
+func (s *OrdersService) UpdateOrders(data *model.Orders) error {
+	return s.DB.Save(data).Error
+}
+
+func (s *OrdersService) DeleteOrders(id uint) error {
+	return s.DB.Delete(&model.Orders{}, id).Error
+}

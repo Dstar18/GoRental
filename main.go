@@ -34,6 +34,7 @@ func main() {
 	// Route orders
 	api.GET("/orders", ordersController.OrdersGets)
 	api.GET("/orders/:id", ordersController.OrdersGetID)
+	api.POST("/orders", ordersController.OrdersStore)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

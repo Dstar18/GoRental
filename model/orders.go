@@ -8,6 +8,6 @@ type Orders struct {
 	OrderDate       time.Time `gorm:"type:timestamp;not null" json:"order_date"`
 	PickupDate      time.Time `gorm:"type:timestamp;not null" json:"pickup_date"`
 	DropOffDate     time.Time `gorm:"type:timestamp;not null" json:"dropoff_date"`
-	PickupLocation  string    `gorm:"type:varchar(50);not null" json:"picup_location"`
+	PickupLocation  string    `gorm:"type:varchar(50);not null" json:"pickup_location"`
 	DropOffLocation string    `gorm:"type:varchar(50);not null" json:"dropoff_location"`
 }
