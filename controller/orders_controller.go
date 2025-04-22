@@ -120,3 +120,70 @@ func (h *OrdersController) OrdersStore(c echo.Context) error {
 		"data":    nil,
 	})
 }
+
+func (h *OrdersController) OrdersUpdate(c echo.Context) error {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"code":    http.StatusBadRequest,
+			"message": "Invalid id",
+		})
+	}
+
+	//  get to service
+	_, errCheck := h.ordersService.GetIdOrders(uint(id))
+	if errCheck != nil {
+		return c.JSON(http.StatusNotFound, map[string]interface{}{
+			"code":    http.StatusNotFound,
+			"message": "Data not found",
+		})
+	}
+
+	var orderVal OrdersValidate
+
+	// Check request body
+	if err := c.Bind(&orderVal); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"code":    http.StatusBadRequest,
+			"message": "Invalid request body",
+		})
+	}
+
+	// Validation struct
+	validate := validator.New()
+	if err := validate.Struct(orderVal); err != nil {
+		errors := make(map[string]string)
+		for _, err := range err.(validator.ValidationErrors) {
+			errors[err.Field()] = "This field is" + " " + err.Tag() + " " + err.Param()
+		}
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"code":    http.StatusBadRequest,
+			"message": errors,
+		})
+	}
+
+	// Update to service
+	param := model.Orders{
+		OrderID:         uint(id),
+		IDCar:           orderVal.IDCar,
+		OrderDate:       orderVal.OrderDate,
+		PickupDate:      orderVal.PickupDate,
+		DropOffDate:     orderVal.DropOffDate,
+		PickupLocation:  orderVal.PickupLocation,
+		DropOffLocation: orderVal.DropOffLocation,
+	}
+	if err := h.ordersService.UpdateOrders(&param); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"code":    http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+	}
+
+	// return success
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"code":    http.StatusOK,
+		"message": "Update successfully",
+		"data":    nil,
+	})
+}

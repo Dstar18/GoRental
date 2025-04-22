@@ -35,6 +35,7 @@ func main() {
 	api.GET("/orders", ordersController.OrdersGets)
 	api.GET("/orders/:id", ordersController.OrdersGetID)
 	api.POST("/orders", ordersController.OrdersStore)
+	api.POST("/orders/:id", ordersController.OrdersUpdate)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }
